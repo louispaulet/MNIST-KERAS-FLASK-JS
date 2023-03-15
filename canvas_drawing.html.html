@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Drawing</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+      background-color: black;
+    }
+
+    #container {
+      display: flex;
+      align-items: center;
+    }
+
+    #predictionResult {
+      font-size: 50px;
+      margin: 0 20px;
+    }
+
+    #previousImage {
+      border: 1px solid black;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Draw on Canvas to test MNIST</h1>
+  <div id="container">
+    <img id="previousImage" alt="Previous image" width="500" height="500">
+    <div id="predictionResult">Prediction: </div>
+    <canvas id="drawingCanvas" width="500" height="500"></canvas>
+  </div>
+  <script>
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    const resultDiv = document.getElementById('predictionResult');
+    const previousImage = document.getElementById('previousImage');
+    let drawing = false;
+
+    ctx.lineWidth = 50;
+    ctx.strokeStyle = 'white';
+
+    async function sendCanvasImage() {
+      const dataURL = canvas.toDataURL('image/png');
+      previousImage.src = dataURL;
+      previousImage.style.display = 'block';
+
+      canvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append('image', blob, 'canvas_image.png');
+
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        resultDiv.textContent = `Prediction: ${result.prediction}`;
+      }, 'image/png');
+    }
+
+    function resetCanvas() {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (drawing) {
+        ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        ctx.stroke();
+      }
+    });
+
+    canvas.addEventListener('mouseup', async () => {
+      drawing = false;
+      try {
+        await sendCanvasImage();
+      } catch (error) {
+        console.error('Error sending image:', error);
+        resultDiv.textContent = 'Error: Failed to get a prediction.';
+      }
+      resetCanvas();
+    });
+
+    canvas.addEventListener('mouseout', () => {
+      drawing = false;
+    });
+
+    resetCanvas();
+  </script>
+</body>
+</html>
