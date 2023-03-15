@@ -1,6 +1,15 @@
 # MNIST-KERAS-FLASK-JS
 CNN MNIST model trained on Keras and served on Flask API to simple JS front-end.    
 
+# Docker
+
+Use this command to create the project.  
+````
+$ docker-compose up --build
+````
+
+It will appear on `localhost:5000`, use `test-api.html` to test.  
+
 # Notebooks
 
 ## `MNIST_comparison_between_frameworks.ipynb`
@@ -15,4 +24,4 @@ The JS form needed to call the API is provided at the end of the notebook.
 
 # Model
 
-`mnist_model.h5` is trained on Keras for 12 iterations and achieves a 99% accuracy score.  
+`mnist_model` is trained on Keras for 12 iterations and achieves a 99% accuracy score.  
