@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MNIST Prediction</title>
+</head>
+<body>
+  <h1>MNIST Prediction</h1>
+  <form id="server-url-form">
+    <label for="server-url-input">API Server URL:</label>
+    <input type="text" id="server-url-input" value="http://127.0.0.1:5000" required>
+  </form>
+  <form id="image-upload-form">
+    <label for="image-input">Upload an image:</label>
+    <input type="file" id="image-input" accept="image/*">
+  </form>
+  <div id="result"></div>
+  <script>
+    async function sendImage(imageFile, serverUrl) {
+      const formData = new FormData();
+      formData.append('image', imageFile);
+
+      const response = await fetch(`${serverUrl}/predict`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.prediction;
+    }
+
+    document.getElementById('image-input').addEventListener('change', async (event) => {
+      const imageFile = event.target.files[0];
+      const serverUrl = document.getElementById('server-url-input').value;
+
+      if (imageFile) {
+        try {
+          const prediction = await sendImage(imageFile, serverUrl);
+          document.getElementById('result').textContent = `Prediction: ${prediction}`;
+        } catch (error) {
+          console.error('Error sending image:', error);
+          document.getElementById('result').textContent = 'Error: Failed to get a prediction.';
+        }
+      } else {
+        document.getElementById('result').textContent = '';
+      }
+    });
+  </script>
+</body>
+</html>
