@@ -1,0 +1,31 @@
+#this procedure has not been tested yet
+
+To authenticate your account and initialize the Google Cloud SDK, run the following command:
+bash
+Copy code
+gcloud init
+Create a new GCP project:
+bash
+Copy code
+gcloud projects create PROJECT_ID
+Replace PROJECT_ID with a unique identifier for your project.
+
+Set the newly created project as the active project:
+bash
+Copy code
+gcloud config set project PROJECT_ID
+Enable the App Engine API for your project:
+bash
+Copy code
+gcloud app create --region=us-central
+Choose a region that's suitable for your needs.
+
+Deploy your application to App Engine:
+bash
+Copy code
+gcloud app deploy
+To view your application, visit the URL provided in the console or run:
+bash
+Copy code
+gcloud app browse
+Now your project is deployed on GCP using App Engine, and you can access it using the provided URL.

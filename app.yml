@@ -1,0 +1,11 @@
+runtime: python310  # Python 3.10 runtime
+entrypoint: gunicorn -b :$PORT app:app  # Entry point for the Flask app
+
+env_variables:
+  PORT: 5000  # Port number
+
+handlers:
+- url: /static
+  static_dir: static
+- url: /.*
+  script: auto
