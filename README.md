@@ -1,27 +1,53 @@
 # MNIST-KERAS-FLASK-JS
-CNN MNIST model trained on Keras and served on Flask API to simple JS front-end.    
 
-# Docker
+This repository contains a simple web application that uses Keras and Flask to create an MNIST digit recognition model. The application allows users to upload an image or draw on an HTML canvas to get digit predictions.
 
-Use this command to create the project.  
+## Features
+
+- Keras-based MNIST digit recognition model
+- Flask server for serving the model
+- Web interface to test the model with uploaded images or drawings on an HTML canvas
+
+## Requirements
+
+Make sure you have the following Python packages installed:
+
+- Flask==2.1.1
+- Flask-CORS==3.0.10
+- tensorflow==2.6.0
+- Keras==2.6.0
+- numpy==1.19.5
+- Pillow==9.0.1
+- protobuf==3.20.1
+
+You can install the required packages using the following command:
+
 ````
-$ docker-compose up --build
+pip install -r requirements.txt
 ````
 
-It will appear on `localhost:5000`, use `test-api.html` to test.  
+## Docker
 
-# Notebooks
+The application can be built and run using Docker. To build the Docker image, run the following command in the project directory:
+````
+docker build -t mnist-keras-flask-js .
+````
 
-## `MNIST_comparison_between_frameworks.ipynb`
 
-Compare ML frameworks to solve MNIST. We check ease of code reading, and training speed on CPU.    
-Keras is the best framework (most readable and accurate model), as it also gives feedback on remaining training time.    
+To run the Docker container, use the following command:
 
-## `flask_experiment_with_MNIST_model.ipynb`
+````
+docker run -p 5000:5000 mnist-keras-flask-js
+````
 
-Notebook to test a simple inference route on Flask API.   
-The JS form needed to call the API is provided at the end of the notebook.    
 
-# Model
+The application will be available at `http://127.0.0.1:5000`.
 
-`mnist_model` is trained on Keras for 12 iterations and achieves a 99% accuracy score.  
+## Usage
+
+There are two web pages available for testing the model:
+
+1. **test-api.html**: This page allows you to upload an image to test the MNIST prediction model. The prediction result will be displayed below the image upload form.
+2. **canvas_drawing.html**: This page allows you to draw a digit on an HTML canvas. The MNIST prediction model will predict the digit based on your drawing, and the prediction result will be displayed next to the canvas.
+
+To access these pages, you can either run the Flask server locally or use the Docker container as described above. Then, navigate to `http://127.0.0.1:5000/static/test-api.html` or `http://127.0.0.1:5000/static/canvas_drawing.html` in your web browser.
